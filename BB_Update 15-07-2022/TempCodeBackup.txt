@@ -1,0 +1,102 @@
+-----------------------------------------
+-- made by Fahmi, telegram: @megapro99 --
+-----------------------------------------
+if (site.name  == "WolfBet") then
+    minbet      = 0,00000270
+else
+    minbet = 0.00000270  -- using LTC Coin
+end
+basebet     = 30 * 0.00000270
+nextbet     = basebet
+chance      = math.random(4500,4999)/100
+ch01        = 1000
+ch02        = 1500
+startch     = ch01
+endch       = ch02
+ctwin       = 0
+ctlose      = 0
+cprofit     = 0
+tp          = 30 * 2
+sl          = 30 * 0.9
+tidur       = 30 * 0.01
+xrv         = 0
+jeda        = 600
+local waktu = os.clock() + jeda
+
+if nextbet < minbet then nextbet = minbet end 
+resetseed()
+function dobet()
+    cprofit += currentprofit
+    
+    if balance > tp then stop() end
+    if cprofit%tidur == 0 then
+        sleep(math.random(30000,60000))
+        cprofit = 0
+        resetseed()
+        bethigh = not bethigh
+        print("\n ░▒▓- Break 30-60 Second -░▒▓ \n")
+     end
+    
+    if xrv > 0 then
+        chance = math.random(startch,endch)/100
+        if win then 
+            if ctlose > math.random(30,40) then
+                rand    = math.random(5,10)
+                nextbet = basebet * rand
+            else
+                nextbet = basebet
+            end
+            xrv     = 0
+            ctlose  = 0
+            bethigh = not bethigh
+        else
+            ctlose += 1
+            if ctlose%math.random(5,10) == 0 then
+                sleep(math.random(150,250))
+            end
+            if chance < math.random(22,25) then
+                if ctlose%math.random(20,30) == 0 then 
+                    startch += math.random(100,200)
+                    endch += math.random(100,200)
+                end
+            else
+                chance  = math.random(ch01,ch02)/100
+            end
+            rand1   = math.random(40,50)
+            mt      = 1+(chance/rand1)
+            nextbet = previousbet * mt
+        end
+    else
+        chance = math.random(4500,4999)/100
+        if win then 
+            ctwin += 1
+            ctlose  = 0
+            bethigh = not bethigh
+            randm   = math.random(10,50)
+            nextbet = basebet * randm
+        else
+            ctwin = 0
+            ctlose += 1
+            rand2   = math.random(40,50)
+            mt      = 1+(chance/rand2)
+            if ctlose > math.random(5,7) then 
+                xrv     = 1 
+                nextbet = previousbet
+            else
+                nextbet = previousbet * mt
+            end
+        end
+        
+    end
+    
+    print("\n ░▒▓- >>> Random Middle Chance <<< -░▒▓ \n")
+    print("-=■ Currency \t[ ".. currency .." / ".. site.name .." ]")
+    print("-=■ cprofit \t[ ".. string.format("%.8f", cprofit) .." ]")
+    print("-=■ Wager \t[ ".. string.format("%.8f", wagered) .." / ".. string.format("%.2f", (wagered/balance)*100) .."% ]")
+    print("-=■ Profit \t[ ".. string.format("%.8f", profit) .." / ".. string.format("%.2f", profit/(balance-profit)*100) .."% ]")
+    print("-=■ MT/Chance \t[ ".. string.format("%.2f", mt) .." - ".. string.format("%.2f", chance) .." ]")  
+    print("\n")
+    
+    if nextbet < minbet then nextbet = minbet end 
+    
+end 
